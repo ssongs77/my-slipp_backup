@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.slipp.domain.User;
 import net.slipp.domain.UserRepository;
+import scala.remote;
 
 @Controller
 @RequestMapping("/users")
@@ -45,6 +46,13 @@ public class UserController {
 		}
 		System.out.println("Login Success!");
 		session.setAttribute("user", user);
+		
+		return "redirect:/";
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session){
+		session.removeAttribute("user");
 		
 		return "redirect:/";
 	}
