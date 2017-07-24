@@ -45,14 +45,14 @@ public class UserController {
 			return "redirect:/users/loginForm";
 		}
 		System.out.println("Login Success!");
-		session.setAttribute("user", user);
+		session.setAttribute("sessionedUser", user);
 		
 		return "redirect:/";
 	}
 	
 	@GetMapping("/logout")
 	public String logout(HttpSession session){
-		session.removeAttribute("user");
+		session.removeAttribute("sessionedUser");
 		
 		return "redirect:/";
 	}
@@ -80,7 +80,13 @@ public class UserController {
 	}
 	
 	@GetMapping("/{id}/form")
-	public String updateform(@PathVariable Long id, Model model){ // 위에 {id}와 여기 선언한 id 이름이 같아야 함.
+	public String updateform(@PathVariable Long id, Model model, HttpSession session){ // 위에 {id}와 여기 선언한 id 이름이 같아야 함.
+		Object sessionedUser = session.getAttribute("sessionedUser");
+		
+		if(sessionedUser == null){
+			return "redirect:/users/loginForm";
+		}
+		
 		User user = userRepository.findOne(id);
 		model.addAttribute("user", user);
 		return "/user/updateForm";
@@ -95,6 +101,4 @@ public class UserController {
 		userRepository.save(user);
 		return "redirect:/users";
 	}
-	
 }
- 
