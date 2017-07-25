@@ -81,23 +81,40 @@ public class UserController {
 	
 	@GetMapping("/{id}/form")
 	public String updateform(@PathVariable Long id, Model model, HttpSession session){ // 위에 {id}와 여기 선언한 id 이름이 같아야 함.
-		Object sessionedUser = session.getAttribute("sessionedUser");
+		Object tempUser = session.getAttribute("sessionedUser");
 		
-		if(sessionedUser == null){
+		if(tempUser == null){
 			return "redirect:/users/loginForm";
 		}
 		
+		User sessionedUser = (User)tempUser;
+		if(!id.equals(sessionedUser.getId())){
+			throw new IllegalStateException("You can't update the anther user");
+		}
+		
 		User user = userRepository.findOne(id);
+		//User user = userRepository.findOne(sessionedUser.getId());
 		model.addAttribute("user", user);
 		return "/user/updateForm";
 	}
 	
 	//@PostMapping("/{id}")
 	@PutMapping("/{id}")
-	public String update(@PathVariable Long id, User newUser){
+	public String update(@PathVariable Long id, User updatedUser, HttpSession session){
 		System.out.println("update");
+		Object tempUser = session.getAttribute("sessionedUser");
+		
+		if(tempUser == null){
+			return "redirect:/users/loginForm";
+		}
+		
+		User sessionedUser = (User)tempUser;
+		if(!id.equals(sessionedUser.getId())){
+			throw new IllegalStateException("You can't update the anther user");
+		}
+		
 		User user = userRepository.findOne(id);
-		user.update(newUser);
+		user.update(updatedUser);
 		userRepository.save(user);
 		return "redirect:/users";
 	}
