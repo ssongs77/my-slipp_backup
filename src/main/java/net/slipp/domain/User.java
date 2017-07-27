@@ -8,18 +8,26 @@ import javax.persistence.Id;
 @Entity
 public class User {
 	@Id
-	@GeneratedValue //Database에서 자동 증가
+	@GeneratedValue // Database에서 자동 증가
 	private long id;
-	
-	@Column(nullable=false, length=20, unique=true)//unique=true로 하면 해당 변수는 유일해야 함.
+
+	@Column(nullable = false, length = 20, unique = true) // unique=true로 하면 해당
+															// 변수는 유일해야 함.
 	private String userId;
-	
+
 	private String password;
 	private String name;
 	private String email;
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public boolean matchId(Long newId) {
+		if (newId == null) {
+			return false;
+		}
+		return newId.equals(id);
 	}
 
 	public long getId() {
@@ -30,8 +38,11 @@ public class User {
 		this.password = password;
 	}
 
-	public String getPassword() {
-		return password;
+	public boolean matchPassword(String newPassword) {
+		if (newPassword == null) {
+			return false;
+		}
+		return newPassword.equals(password);
 	}
 
 	public void setName(String name) {
@@ -53,6 +64,5 @@ public class User {
 	public String toString() {
 		return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
 	}
-
 
 }
